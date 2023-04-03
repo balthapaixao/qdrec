@@ -1,8 +1,8 @@
 import clean_text_utilities
 
 
-def preprocess_text(text):
-    """Preprocess text for BERT.
+def preprocess_text(text: str) -> str:
+    """Preprocess text.
     Args:
         text: a string
     Returns:
@@ -22,3 +22,5 @@ def preprocess_text(text):
     text = clean_text_utilities.remove_special_characters(text)
 
     text = clean_text_utilities.clean_text(text)
+
+    return text

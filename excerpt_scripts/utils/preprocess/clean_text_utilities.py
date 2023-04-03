@@ -11,22 +11,63 @@ from _old.google_scrapper import fix_spelling_in_answer
 
 
 def remove_dash_n(text: str) -> str:
+    """
+    Remove quebras de linha
+
+    Arguments:
+        text {str} -- Texto a ser tratado
+
+    Returns:
+        str -- Texto tratado"""
     return text.replace('/n', ' ')
 
 
 def remove_spaces(text: str) -> str:
+    """
+    Remove espaços que se repetem mais de 2 vezes
+
+    Arguments:
+        text {str} -- Texto a ser tratado
+
+    Returns:
+        str -- Texto tratado"""
     return re.sub(r"\s+", " ", text).strip()
 
 
 def remove_lots_of_points(text: str) -> str:
+    """
+    Remove pontos que se repetem mais de 2 vezes
+
+    Arguments:
+        text {str} -- Texto a ser tratado
+
+    Returns:
+        str -- Texto tratado"""
     return re.sub('\.{2,}', ' ', text)
 
 
 def remove_bad_chars(text: str) -> str:
+    """
+    Remove caracteres que não são letras, números ou espaços
+
+    Arguments:
+        text {str} -- Texto a ser tratado
+
+    Returns:
+        str -- Texto tratado"""
     return re.sub('[˜˚˝˙ˆˇ˚˘˘Œ˛œ_%ﬁﬂ‡š<>›„’]', ' ', text)
 
 
 def spaced_letters(text: str) -> str:
+    """
+    Substitui palavras com espaços que puderam ser detectados anteriormente
+
+    Arguments:
+        text {str} -- Texto a ser tratado
+
+    Returns:
+        str -- Texto tratado
+    """
     text = text.replace('A P O S E N T A R', ' aposentar ')
     text = text.replace('A N E X O I I I', 'ANEXO III')
     text = text.replace('A N E X O I I', 'ANEXO II')
@@ -62,6 +103,15 @@ def spaced_letters(text: str) -> str:
 
 
 def join_words(text: str) -> str:
+    """
+    Essa função é para juntar palavras que estão separadas
+
+    Arguments:
+        text {str} -- Texto
+
+    Returns:
+        str -- Texto com palavras juntas"""
+
     # Há muitas palavras assim: "res - ponsável"
     # Vou ter algum problema juntando coisa que não devia
     # Espero que nesses casos o tokenizer resolva
@@ -69,6 +119,14 @@ def join_words(text: str) -> str:
 
 
 def separate_words(text: str) -> str:
+    """
+    Essa função é para separar palavras que estão juntas
+
+    Arguments:
+        text {str} -- Texto
+
+    Returns:
+        str -- Texto com palavras separadas"""
     # Há muitas palavras assim: "FerrazPresidente" "FerrazAPresidente"
     # Vou supor que sempre que houver uma letra minúscula seguida de maiúscula é para separar
     text = re.sub('(?<=[a-záàâãéêíóôõú])(?=[A-ZÁÀÂÃÉÊÍÓÔÕÚ])', ' ', text)
@@ -78,6 +136,14 @@ def separate_words(text: str) -> str:
 
 
 def dots_that_mess_segmentation(text: str) -> str:
+    """
+    Essa função é para corrigir alguns pontos que atrapalham a segmentação
+
+    Arguments:
+        text {str} -- Texto a ser corrigido
+
+    Returns:
+        str -- Texto corrigido"""
     text = re.sub('sec\.', 'Sec ', text, flags=re.IGNORECASE)
     text = re.sub('av\.', 'Avenida ', text, flags=re.IGNORECASE)
     text = re.sub('min\.', 'Ministro ', text, flags=re.IGNORECASE)
@@ -102,6 +168,14 @@ def dots_that_mess_segmentation(text: str) -> str:
 
 
 def preprocess(text: str) -> str:
+    """
+    Função que faz o pré-processamento do texto
+
+    Arguments:
+        text {str} -- texto a ser processado
+
+    Returns:
+        str -- texto pré-processado"""
     text = remove_special_characters(text)
     text = remove_dash_n(text)
     text = remove_lots_of_points(text)
@@ -118,7 +192,16 @@ def preprocess(text: str) -> str:
 
 
 # my functions
-def remove_special_characters(text: str):
+def remove_special_characters(text: str) -> str:
+    """
+    Remove caracteres especiais do texto
+
+    Arguments:
+        text {str} -- texto a ser processado
+
+    Returns:
+        str -- texto sem caracteres especiais
+    """
     text = text.replace("<__", "").replace("__>", "")
     text = text.replace("- -", "-")
     text = text.replace(" - ", "-")
@@ -130,15 +213,42 @@ def remove_special_characters(text: str):
 
 
 def remove_page_breaker(text: str) -> str:
+    """
+    Remove o texto que separa as páginas
+
+    Arguments:
+        text {str} -- texto a ser processado
+
+    Returns:    
+        str -- texto sem o separador de páginas
+    """
     return text.replace("\n", " ").strip()
 
 
 def find_occurrences(text: str,
                      character: str) -> list:
+    """
+    Encontra todas as ocorrências de um caracter em um texto
+
+    Arguments:
+        text {str} -- texto a ser processado
+        character {str} -- caracter a ser procurado
+
+    Returns:
+        list -- lista com as posições das ocorrências"""
     return [i for i, letter in enumerate(text) if letter == character]
 
 
 def get_whole_words(subtext: str) -> str:
+    """
+    Pega a palavra inteira, sem cortar pela metade
+
+    Arguments:
+        subtext {str} -- parte texto a ser processado
+
+    Returns:
+        str -- palavra inteira
+        """
     spaces_indexes = find_occurrences(subtext, " ")
     first_pos = spaces_indexes[0]
     last_pos = spaces_indexes[-1]
@@ -157,6 +267,17 @@ def contains_number(word: str):
 
 def find_dashes_and_replace_words(text: str,
                                   df_ptbr: pd.DataFrame) -> str:
+    """
+    Temos problemas onde há palavras com hífen
+    Ex: "res - ponsável"
+
+    Arguments:
+        text {str} -- texto a ser processado
+        df_ptbr {pd.DataFrame} -- dataframe com o dicionario das palavras em portugues pela funcao get_ptbr_dictionary()
+
+    Returns:
+        str -- texto processado
+    """
     dashes_indexes = find_occurrences(text, "-")
     spaces_indexes = find_occurrences(text, " ")
 
@@ -199,6 +320,18 @@ def find_dashes_and_replace_words(text: str,
 
 def clean_text(text: str,
                window_size: int = 50) -> str:
+    """Remove caracteres especiais e espaços em branco
+
+    Arguments:
+        text {str} -- texto a ser limpo
+
+        Keyword Arguments:
+            window_size {int} -- tamanho da janela de contexto (default: {50})
+
+    Returns:
+        str -- texto limpo
+
+    """
     inicio = datetime.datetime.now()  # .strftime("%Y%m%d%H:%M:%S")
     logging.info(
         f"TEXTO INICIAL {inicio.strftime('%Y%m%d%H:%M:%S')} -> {text}")
@@ -263,6 +396,14 @@ def clean_text(text: str,
 
 
 def read_dicionario_br() -> pd.DataFrame:
+    """
+    Lê o dicionário de palavras do português brasileiro
+
+    Returns
+    -------
+    df_ptbr : pd.DataFrame
+        Dataframe com as palavras do português brasileiro
+    """
     # obtendo palavras do portugues brasileiro
     url = 'https://drive.google.com/file/d/1tUDeEyH6vonx-ctxeGVWG6gh4knP1Igi/view?usp=sharing'
     path = 'https://drive.google.com/uc?export=download&id='+url.split('/')[-2]

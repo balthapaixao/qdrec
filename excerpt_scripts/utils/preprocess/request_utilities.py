@@ -14,13 +14,31 @@ PATH = get_path()
 
 
 def get_any_proxy() -> dict:
+    """
+    Pega um proxy aleatório da lista de proxies
+
+    Arguments:
+        None
+
+    Returns:
+        proxy: dict"""
     with open(f"{PATH}/proxies_list.txt", "r") as f:
         proxy_list = f.read().split("\n")
     proxy = random.choice(proxy_list)
     return proxy
 
 
-def send_query(query: str):
+def send_query(query: str) -> List(str, int):
+    """
+    Envia uma query para o google e retorna a resposta contida no "Você quis dizer:"
+
+    Arguments:
+        query: str
+
+    Returns:
+        query: str
+        status_code: int"""
+
     while True:
         url = "https://www.google.com.br/search?q={}".format(query)
 
@@ -52,7 +70,16 @@ def send_query(query: str):
     return query, html.status_code
 
 
-def fix_spelling_in_answer(answer):
+def fix_spelling_in_answer(answer: str) -> str:
+    """
+    Corrige a ortografia de uma resposta de forma recursiva se necessário
+
+    Arguments:
+        answer: str
+
+    Returns:
+        new_answer: str
+        status_code: int"""
     new_answer, status_code = send_query(answer)
     if status_code == 429:
         time_to_sleep = random.randint(25, 35)
