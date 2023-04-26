@@ -1,9 +1,9 @@
 # preprocessing.py
-from sqlalchemy import text
+
 from sqlalchemy import create_engine
 import pandas as pd
 import re
-#from unidecode import unidecode
+# from unidecode import unidecode
 import logging
 import datetime
 from copy import deepcopy
@@ -59,7 +59,7 @@ def spaced_letters(text):
     text = text.replace("I P VA", "IPVA")
     text = text.replace("R E C U R S O S : P r o g r a m a E s c o l a r A u t ô n o m a d e G e s t ã o",
                         "RECURSOS: Programa Escolar Autônoma de Gestão")
-    #text = text.replace("I P VA", "IPVA")
+    # text = text.replace("I P VA", "IPVA")
 
     text = text.replace("cartei-rinha", "carteirinha")
 

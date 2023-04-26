@@ -1,14 +1,12 @@
 
 import time
 
-import nltk
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
 import random
 
-nltk.download('punkt')
 
 PATH = "."
 
@@ -41,11 +39,11 @@ def send_query(query: str):
             query = a.text
 
         elif html.status_code == 429:  # Too many requests
-            #print("Time to wait:")
+            # print("Time to wait:")
             # print(html.headers)
             break
         else:
-            #print("Error: ", html.status_code)
+            # print("Error: ", html.status_code)
             # print(html)
             break
 

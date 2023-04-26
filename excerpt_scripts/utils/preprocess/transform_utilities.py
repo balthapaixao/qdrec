@@ -1,4 +1,7 @@
 import clean_text_utilities
+from multiprocessing import cpu_count, Pool
+import numpy as np
+import pandas as pd
 
 
 def preprocess_text(text: str) -> str:
@@ -24,3 +27,19 @@ def preprocess_text(text: str) -> str:
     text = clean_text_utilities.clean_text(text)
 
     return text
+
+
+def multiprocess_request(df: pd.DataFrame,
+                         func,
+                         n_jobs: int = cpu_count()) -> pd.DataFrame:
+    """
+    Multiprocess a function that takes a DataFrame as input
+    :param df: DataFrame
+    :param func: function
+    :param n_jobs: number of processes
+    :return: DataFrame
+    """
+    df_split = np.array_split(df, n_jobs - 1)
+    with Pool(n_jobs) as pool:
+        df = pd.concat(pool.map(func, df_split))
+    return df
