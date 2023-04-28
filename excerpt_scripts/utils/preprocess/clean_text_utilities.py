@@ -5,7 +5,7 @@ import re
 import logging
 import datetime
 # from copy import deepcopy
-from _old.google_scrapper import fix_spelling_in_answer
+from .web_utilities import fix_spelling_in_answer
 
 
 def remove_dash_n(text: str) -> str:
@@ -22,10 +22,7 @@ def remove_dash_n(text: str) -> str:
 
 def remove_spaces(text: str) -> str:
     """
-    Remove espaços que se repetem mais
-def clean(texts: pd.Series) -> pd.Series:
-    return texts.apply(lambda txt: clean_text(txt))
- de 2 vezes
+    Remove espaços que se repetem mais de 2 vezes
 
     Arguments:
         text {str} -- Texto a ser tratado
@@ -213,6 +210,22 @@ def remove_special_characters(text: str) -> str:
     return text
 
 
+def remove_multiple_dashes(text: str) -> str:
+    """
+    Remove os traços que estão em excesso
+
+    Arguments:
+        text {str} -- texto a ser processado
+
+    Returns:
+        str -- texto sem traços em excesso
+    """
+
+    text = re.sub(r'-+', '-', text)
+
+    return text
+
+
 def remove_page_breaker(text: str) -> str:
     """
     Remove o texto que separa as páginas
@@ -368,7 +381,11 @@ def clean_text(text: str,
             last_space_position += start_dash_position  # last_position
 
             # aqui entra a validação no google
-            subtext = fix_spelling_in_answer(subtext)[0]
+            _has_url = check_if_is_url(subtext)
+            if _has_url:
+                subtext = subtext
+            else:
+                subtext = fix_spelling_in_answer(subtext)[0]
 
             first_fragment = text[start_dash_position:
                                   first_space_position]
@@ -417,5 +434,35 @@ def read_dicionario_br() -> pd.DataFrame:
     return df_ptbr
 
 
+def check_if_is_url(text: str) -> bool:
+    """Check if a string is a URL.
+    Args:
+        text: a string
+    Returns:
+        a boolean
+    """
+
+    if (('http' in text) or
+        ('www' in text) or
+        ('.com' in text) or
+            ('.br' in text)):
+        return True
+    else:
+        return False
+
+
 def clean(texts: pd.Series) -> pd.Series:
+    """
+    Limpa o texto
+
+    Arguments:
+        texts {pd.Series} -- texto a ser limpo
+
+    Returns:
+        pd.Series -- texto limpo
+    """
+
     return texts.apply(lambda txt: clean_text(txt))
+
+
+# new functions

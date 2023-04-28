@@ -1,4 +1,3 @@
-import logging
 import os
 
 
@@ -19,8 +18,3 @@ def get_path() -> str:
         path = os.path.dirname(os.path.realpath('__file__'))
 
     return path
-
-
-logger = logging.getLogger(__name__)
-
-path = get_path()

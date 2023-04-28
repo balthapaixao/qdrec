@@ -2,8 +2,7 @@
 import time
 
 from ..file_utilities import get_path
-from ..log_utilities import set_basic_logs
-
+from typing import List, Union
 import requests
 from bs4 import BeautifulSoup
 
@@ -22,13 +21,13 @@ def get_any_proxy() -> dict:
 
     Returns:
         proxy: dict"""
-    with open(f"{PATH}/proxies_list.txt", "r") as f:
+    with open(f"{PATH}/../../data/proxies_list.txt", "r") as f:
         proxy_list = f.read().split("\n")
     proxy = random.choice(proxy_list)
     return proxy
 
 
-def send_query(query: str) -> List(str, int):
+def send_query(query: str) -> List[Union[str, int]]:
     """
     Envia uma query para o google e retorna a resposta contida no "Você quis dizer:"
 
@@ -59,11 +58,11 @@ def send_query(query: str) -> List(str, int):
             query = a.text
 
         elif html.status_code == 429:  # Too many requests
-            #logger.warning("Time to wait:")
+            # logger.warning("Time to wait:")
             # print(html.headers)
             break
         else:
-            #logger.warning("Error: ", html.status_code)
+            # logger.warning("Error: ", html.status_code)
             # print(html)
             break
 

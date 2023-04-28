@@ -11,7 +11,7 @@ from .file_utilities import get_path
 
 path = get_path()
 
-date = pendulum.datetime.now().strftime("%Y%m%d%H%M")
+date = pendulum.now().format("Ymd_H:M")
 
 
 LOGGING_FORMAT = os.environ.get(
